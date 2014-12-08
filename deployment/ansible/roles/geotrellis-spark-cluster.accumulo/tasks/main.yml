@@ -1,0 +1,55 @@
+---
+- name: Add Accumulo user to HDFS group
+  user: name=accumulo
+        append=yes
+        group=hadoop
+        state=present
+
+- name: Symlink Accumulo init.d script
+  file: src=/usr/lib/accumulo/bin/etc_initd_accumulo
+        dest=/etc/init.d/accumulo
+        state=link
+
+- name: Configure Accumulo
+  template: src={{ item }}.j2
+            dest={{ accumulo_conf_dir }}/{{ item }}
+            mode=0644
+  with_items:
+    - accumulo-env.sh
+    - accumulo-metrics.xml
+    - accumulo-site.xml
+    - generic_logger.xml
+    - log4j.properties
+    - monitor_logger.xml
+  notify:
+    - Restart Accumulo
+
+- name: Configure Accumulo roles
+  copy: content={{ accumulo_leader_host }}
+        dest={{ accumulo_conf_dir }}/{{ item }}
+        mode=0644
+  with_items:
+    - gc
+    - masters
+    - monitor
+    - tracers
+  notify:
+    - Restart Accumulo
+
+- name: Check if Accumulo has been initialized
+  command: "hadoop fs -test -d /accumulo"
+  sudo_user: hdfs
+  register: accumulo_initialized
+  changed_when: accumulo_initialized.rc == 1
+  failed_when: False
+
+- name: Initialize Accumulo
+  command: "accumulo init --instance-name {{ accumulo_secret }} --password {{ accumulo_secret }}"
+  sudo_user: accumulo
+  when: accumulo_initialized | changed
+
+- name: Adjust Accumulo service startup order
+  command: update-rc.d accumulo defaults 30
+
+- name: Enable and start the Accumulo service
+  service: name=accumulo enabled=yes state=started

@@ -1,0 +1,6 @@
+---
+- hosts: leaders
+  sudo: True
+
+  roles:
+    - { role: "geotrellis-spark-cluster.accumulo", accumulo_leader: True }
