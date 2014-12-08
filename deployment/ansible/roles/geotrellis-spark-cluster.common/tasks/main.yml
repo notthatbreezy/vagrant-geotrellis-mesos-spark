@@ -13,3 +13,10 @@
   with_items:
     - soft
     - hard
+
+- name: Set system swappiness
+  copy: content="vm.swappiness = 0"
+        dest=/etc/sysctl.d/10-swappiness.conf
+        mode=0644
+  notify:
+    - Update sysctl
