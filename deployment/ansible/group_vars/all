@@ -1,5 +1,6 @@
 ---
 mesos_follower: not mesos_leader
+accumulo_follower: not accumulo_follower
 developing: "'development' in group_names"
 packing: "'packer' in group_names"
 

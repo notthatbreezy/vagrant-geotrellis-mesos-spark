@@ -10,3 +10,4 @@
     - { role: "geotrellis-spark-cluster.common" }
     - { role: "azavea.hdfs", hdfs_namenode: False }
     - { role: "geotrellis-spark-cluster.mesos", mesos_leader: False }
+    - { role: "azavea.accumulo", accumulo_leader: False }

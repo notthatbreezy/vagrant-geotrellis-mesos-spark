@@ -89,6 +89,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     leader.vm.network "forwarded_port", guest: 8080, host: 8080
     # HDFS console
     leader.vm.network "forwarded_port", guest: 50070, host: 50070
+    # Accumulo console
+    leader.vm.network "forwarded_port", guest: 50095, host: 50095
 
     leader.vm.provider "virtualbox" do |v|
       v.memory = 3072
