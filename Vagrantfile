@@ -79,6 +79,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     leader.vm.network "forwarded_port", guest: 5050, host: 5050
     # Marathon console
     leader.vm.network "forwarded_port", guest: 8080, host: 8080
+    # Ipython Notebook
+    leader.vm.network "forwarded_port", guest: 8880, host: 8880
     # HDFS console
     leader.vm.network "forwarded_port", guest: 50070, host: 50070
     # Accumulo console
@@ -93,6 +95,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     leader.vm.provider "virtualbox" do |v|
       v.memory = 3072
     end
+
+    leader.vm.synced_folder "/home/cbrown/Projects/nyc-taxi-spark", "/vagrant", disabled: false
 
     leader.vm.provision "ansible" do |ansible|
       ansible.playbook = "deployment/ansible/leader.yml"

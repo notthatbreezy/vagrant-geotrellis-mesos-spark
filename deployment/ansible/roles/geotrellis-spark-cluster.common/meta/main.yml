@@ -5,3 +5,4 @@ dependencies:
   - { role: "azavea.libgdal-java" }
   - { role: "geotrellis-spark-cluster.collectd" }
   - { role: "geotrellis-spark-cluster.spark" }
+  - { role: "geotrellis-spark-cluster.dependencies" }

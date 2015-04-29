@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { "role": azavea.python, "python_development": true }
+  - { "role": azavea.pip }

@@ -1,0 +1,17 @@
+description "Upstart script for ipython notebook server"
+
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on shutdown
+
+setuid {{ ansible_ssh_user }}
+chdir /home/{{ ansible_ssh_user }}/
+
+
+respawn
+script
+  export SPARK_HOME=/usr/lib/spark
+  export PYSPARK_SUBMIT_ARGS='--master mesos://zk://zookeeper.service.geotrellis-spark.internal:2181/mesos'
+  export PYTHONPATH=$SPARK_HOME/python/:$PYTHONPATH
+  export PYTHONPATH=$SPARK_HOME/python/lib/py4j-0.8.2.1-src.zip:$PYTHONPATH
+  exec ipython notebook --profile=pyspark
+end script

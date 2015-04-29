@@ -1,0 +1,53 @@
+---
+- name: Install pyspark (assuming cdh 5.4 setup in previous roles)
+  apt: name=spark-python state=latest
+
+- name: Install python packages via pip
+  pip: name={{ item.name }} version={{ item.version }}
+  with_items:
+    - { name: "ipython", version: "3.1.0" }
+    - { name: "tornado", version: "4.1" }
+    - { name: "pyzmq", version: "14.5.0" }
+    - { name: "jinja2", version: "2.7.3" }
+    - { name: "py4j", version: "0.8.2.1" }
+    - { name: "py4j", version: "0.8.2.1" }
+    - { name: "jsonschema", version: "2.4.0" }
+
+# - name: Update the environment to set SPARK_HOME
+#   lineinfile:
+#     dest=/etc/environment
+#     line="{{ item.setting }}"
+#     regexp="{{ item.replace_string }}"
+#     owner=vagrant
+#     state=present
+#     insertafter=EOF
+#     create=True
+#   with_items:
+#   - { setting: "export PYTHONPATH=$/usr/lib/spark/python/:$PYTHONPATH",
+#       replace_string: "export PYTHONPATH=$/usr/lib/spark/python/:$PYTHONPATH" }
+#   - { setting: "export PYSPARK_SUBMIT_ARGS='--master mesos://zk://zookeeper.service.geotrellis-spark.internal:2181/mesos'",
+#       replace_string: "export PYSPARK_SUBMIT_ARGS=" }
+#   - { setting: "export PYTHONPATH=$/usr/lib/spark/python/lib/py4j-0.8.2.1-src.zip:$PYTHONPATH",
+#       replace_string: "export PYTHONPATH=$/usr/lib/spark/python/lib/py4j-0.8.2.1-src.zip:$PYTHONPATH" }
+
+- name: Create ipython notebook profile
+  command: ipython profile create pyspark
+  sudo: no
+
+- name: Copy ipython notebook settings to profile
+  template: src={{ item }}.j2 dest=/home/{{ ansible_ssh_user }}/.ipython/profile_pyspark/startup/{{ item }}
+  sudo: no
+  with_items:
+    - "00-pyspark-setup.py"
+
+- name: Copy ipython notebook settings to profile
+  template: src={{ item }}.j2 dest=/home/{{ ansible_ssh_user }}/.ipython/profile_pyspark/{{ item }}
+  sudo: no
+  with_items:
+    - "ipython_notebook_config.py"
+
+- name: Create upstart job to start notebook server
+  template: src=ipython-spark.conf.j2 dest=/etc/init/ipython-spark.conf
+
+- name: Restart ipython notebook service
+  service: name=ipython-spark state=restarted
