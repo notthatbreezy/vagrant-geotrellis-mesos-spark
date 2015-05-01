@@ -11,8 +11,6 @@
     - { role: "azavea.pptpd", when: packing }
     - { role: "geotrellis-spark-cluster.graphite" }
     - { role: "geotrellis-spark-cluster.grafana" }
-    - { role: "geotrellis-spark-cluster.hdfs", hdfs_namenode: True }
     - { role: "geotrellis-spark-cluster.mesos", mesos_leader: True }
-    - { role: "geotrellis-spark-cluster.accumulo", accumulo_leader: True }
     - { role: "geotrellis-spark-cluster.ipython" }
     - { role: "geotrellis-spark-cluster.cleanup" }
