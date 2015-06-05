@@ -57,3 +57,6 @@ collectd_load_plugins:
 spark_env_extras:
   MESOS_NATIVE_LIBRARY: "/usr/local/lib/libmesos.so"
   SPARK_WORKER_CORES: "8"
+
+spark_version: "1.4.0-SNAPSHOT-bin-2.6.0"
+spark_mirror: "https://s3.amazonaws.com/spark.azavea.com"
